@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "love/**"
 
 permissions:
   contents: read
@@ -13,6 +15,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./love
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,7 +36,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: ./love/out
 
   deploy:
     environment:
