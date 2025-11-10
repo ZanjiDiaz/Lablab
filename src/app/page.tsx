@@ -115,20 +115,20 @@ export default function Home() {
     // Wait for fade out animation to complete before hiding loading
     setTimeout(() => {
       setShowLoading(false);
-    }, 800);
+      // Play audio when main page loads
+      if (audioRef.current && audioRef.current.paused) {
+        audioRef.current.play().catch(err => {
+          console.log('Audio play error:', err);
+        });
+      }
+    }, 10);
   };
 
   const handleUserInteraction = () => {
-    // Try to play audio on user interaction
-    if (audioRef.current && audioRef.current.paused) {
-      audioRef.current.play().catch(err => {
-        console.log('Audio play error:', err);
-      });
-    }
+    // Do nothing - audio will play automatically when main page loads
   };
 
   const handleClickScreenClick = () => {
-    handleUserInteraction();
     setShowClickScreen(false);
     setShowFlowersReveal(true);
     
