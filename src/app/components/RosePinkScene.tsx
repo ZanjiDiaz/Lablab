@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, Suspense } from 'react';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { useLoader } from '@react-three/fiber';
 
@@ -19,7 +19,11 @@ export default function RosePinkScene() {
         gl={{ 
           antialias: true,
           alpha: true,
-          outputColorSpace: THREE.SRGBColorSpace
+          outputColorSpace: THREE.SRGBColorSpace,
+          powerPreference: 'high-performance',
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0xffc0cb, 0);
         }}
       >
 
@@ -29,7 +33,9 @@ export default function RosePinkScene() {
           intensity={0.8} 
           castShadow
         />
-        <RoseModel />
+        <Suspense fallback={null}>
+          <RoseModel />
+        </Suspense>
         <OrbitControls 
           autoRotate 
           autoRotateSpeed={.75}

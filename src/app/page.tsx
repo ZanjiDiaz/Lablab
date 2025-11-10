@@ -91,20 +91,11 @@ export default function Home() {
     setShowClickScreen(false);
   };
 
-  // Initialize and play audio on mount (before loading screen)
+  // Initialize audio on mount (will play after user interaction)
   useEffect(() => {
     audioRef.current = new Audio('/mp3/Ed Sheeran - Tenerife Sea .mp3');
     audioRef.current.loop = true;
     audioRef.current.volume = 0.75;
-    
-    // Try to play audio immediately
-    const playPromise = audioRef.current.play();
-    
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        console.log('Audio autoplay prevented, will play on user interaction:', err);
-      });
-    }
 
     return () => {
       if (audioRef.current) {
