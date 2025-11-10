@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: isGithubPages ? '/Lablab/love' : '',
-  assetPrefix: isGithubPages ? '/Lablab/love/' : '',
+  basePath: isGithubPages ? '/Lablab' : '',
+  assetPrefix: isGithubPages ? '/Lablab/' : '',
 };
 
 export default nextConfig;
