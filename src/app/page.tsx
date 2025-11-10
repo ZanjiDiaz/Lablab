@@ -18,6 +18,8 @@ export default function Home() {
   const [showLoading, setShowLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [hoverImages, setHoverImages] = useState<Array<{ id: number; x: number; y: number; image: string }>>([]);
+  const [currentBgIndex, setCurrentBgIndex] = useState(0);
+  const [displayedMessages, setDisplayedMessages] = useState<Array<{ id: number; x: number; y: number; text: string }>>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const roseRef = useRef<HTMLDivElement>(null);
@@ -26,6 +28,34 @@ export default function Home() {
   const lastImageTime = useRef(0);
   const lastImageUsed = useRef<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const messageCounter = useRef(0);
+
+  // Message object - you can write your messages here
+  const messages = [
+    "Hi Lablabb!!",
+    "Thank you lablabb sa lahaaat!",
+    "Palagi mo lang tatandaan na mahal kita palagi",
+    "Palagi kong ipagpapasalamat kay Lord na ikaw yung dumating sa buhay ko",
+    "Mas matanda ka na sakin hahahaha!",
+    "Ano handa mo love? Penge spaghetti",
+    "Nakangiti ka nanaman!",
+    "What if mas matangkad ka sakin? huhuhu",
+    "Mahal na mahal kita lablab!",
+    "Sana ol 25 years old!",
+    "25 ka na pero baby parin kita",
+    "Please be mine forever",
+    "Bawal ka ma stress ngayon ha?",
+    "I'll never leave",
+    "Buti nagka internet hahahaha",
+    "Natutuwa ako sayoooooo!",
+    "I miss you naaaaaaaa",
+    "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "Ganda ng background music no lablab?",
+    "Kahit anong mangyari, andito lang ako",
+    "Sorry love kung corny to hahahaha I love you!",
+    "Durog na tong rose kaka pindot mo hahaha",
+    "Happy happy happy birthday lablab!",
+  ];
 
   // Calculate basePath based on hostname
   const basePath = useMemo(() => {
@@ -97,6 +127,30 @@ export default function Home() {
     setShowClickScreen(false);
   };
 
+  const handleRoseClick = () => {
+    // Pick a random message from the messages array
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    
+    // Generate random position for the message, avoiding the bottom area where the rose is
+    const randomX = Math.random() * (window.innerWidth - 400) + 200;
+    const randomY = Math.random() * (window.innerHeight - 400) + 100; // Avoid bottom area
+    
+    // Create a new message with unique ID
+    const newMessage = {
+      id: messageCounter.current++,
+      x: randomX,
+      y: randomY,
+      text: randomMessage
+    };
+    
+    setDisplayedMessages(prev => [...prev, newMessage]);
+    
+    // Remove this message after 3 seconds
+    setTimeout(() => {
+      setDisplayedMessages(prev => prev.filter(msg => msg.id !== newMessage.id));
+    }, 3000);
+  };
+
   // Initialize audio on mount (will play after user interaction)
   useEffect(() => {
     audioRef.current = new Audio(`${basePath}/mp3/Ed Sheeran - Tenerife Sea .mp3`);
@@ -111,6 +165,17 @@ export default function Home() {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Background slideshow effect
+  useEffect(() => {
+    if (showLoading) return;
+    
+    const interval = setInterval(() => {
+      setCurrentBgIndex((prev) => (prev + 1) % images.length);
+    }, 4000); // Change image every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [showLoading, images.length]);
 
   useEffect(() => {
     if (!showLoading && containerRef.current && titleRef.current && roseRef.current) {
@@ -150,7 +215,7 @@ export default function Home() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-linear-to-br from-pink-100 to-pink-200 cursor-pointer font-ppmori"
           onClick={handleClickScreenClick}
         >
-          <div className="text-center">
+          <div className="text-center font-ppmori">
             <h1 className="text-7xl md:text-9xl font-bold text-pink-600 mb-8 animate-pulse">
               Click here!
             </h1>
@@ -176,26 +241,69 @@ export default function Home() {
       {/* Main Page */}
       <div 
         ref={containerRef} 
-        className={` flex items-center justify-center font-intern relative overflow-hidden transition-opacity duration-1000 ease-in-out ${
+        className={`font-ppmori flex items-end justify-center relative overflow-hidden transition-opacity duration-1000 ease-in-out w-screen h-screen ${
           showLoading || showClickScreen ? 'opacity-0' : 'opacity-100'
         }`}
         onMouseMove={handleMouseMove}
         style={{
           backdropFilter: 'blur(0.5px)',
           WebkitBackdropFilter: 'blur(0.5px)',
-          backgroundColor: '#FFC0CB',
         }}
       >
+        {/* Background Slideshow */}
+        <div className="absolute inset-0 w-full h-full">
+          {images.map((img, index) => (
+            <div
+              key={img}
+              className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out flex items-center justify-center"
+              style={{
+                opacity: index === currentBgIndex ? 1 : 0,
+                zIndex: 0,
+              }}
+            >
+              <Image
+                src={`${basePath}/imgs/${img}`}
+                alt="background"
+                fill
+                className="object-contain"
+                style={{ objectPosition: 'center' }}
+                priority={index === 0}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Overlay to create romantic atmosphere */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-1"
+          style={{
+            background: 'rgba(255, 192, 203, 0.3)',
+            backdropFilter: 'blur(4px)',
+          }}
+        />
+
         {/* Romantic vignette and glare overlay */}
         <div 
           className="absolute inset-0 pointer-events-none z-5"
           style={{
             background: `
-              radial-gradient(circle at 30% 30%, rgba(255, 192, 203, 0.4) 0%, transparent 20%),
-              radial-gradient(circle at 70% 60%, rgba(255, 182, 193, 0.3) 0%, transparent 25%),
-              radial-gradient(ellipse at center, transparent 40%, rgba(255, 182, 193, 0.2) 100%)
+              radial-gradient(circle at 30% 30%, rgba(255, 192, 203, 0.6) 0%, transparent 20%),
+              radial-gradient(circle at 70% 60%, rgba(255, 182, 193, 0.5) 0%, transparent 25%),
+              radial-gradient(ellipse at center, transparent 40%, rgba(139, 69, 69, 0.4) 100%)
             `,
             mixBlendMode: 'soft-light',
+          }}
+        />
+
+        {/* Cinematic lens flare */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-5 animate-pulse"
+          style={{
+            background: `
+              radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 10%),
+              radial-gradient(circle at 80% 20%, rgba(255, 182, 193, 0.15) 0%, transparent 15%)
+            `,
+            animationDuration: '4s',
           }}
         />
         
@@ -203,11 +311,11 @@ export default function Home() {
         {hoverImages.map(img => (
           <div
             key={img.id}
-            className="fixed pointer-events-none z-0 animate-[fadeInOut_1.5s_ease-in-out]"
+            className="fixed pointer-events-none z-20 animate-[fadeInOut_1.5s_ease-in-out]"
             style={{
               left: img.x - 75,
               top: img.y - 75,
-              filter: 'blur(0.3px)',
+              filter: 'brightness(1.1) contrast(1.1)',
             }}
           >
             <Image
@@ -215,14 +323,39 @@ export default function Home() {
               alt="memory"
               width={150}
               height={150}
-              className="rounded-lg shadow-2xl object-cover"
+              className="rounded-lg shadow-2xl object-cover w-[150px] h-[150px]"
+              style={{ display: 'block' }}
             />
           </div>
         ))}
 
-        <div ref={roseRef} className="rose relative z-10 flex items-center justify-center w-screen h-screen">
+        <div 
+          ref={roseRef} 
+          className="rose z-30 flex items-center justify-center w-1/2 h-1/2 cursor-pointer"
+          onClick={handleRoseClick}
+        >
           <RosePinkScene/>
         </div>
+
+        {/* Message Display */}
+        {displayedMessages.map(msg => (
+          <div 
+            key={msg.id}
+            className="fixed z-40 pointer-events-none animate-[fadeInOut_3s_ease-in-out]"
+            style={{
+              left: msg.x,
+              top: msg.y,
+              transform: 'translate(-50%, -50%)',
+              filter: 'brightness(1.1) contrast(1.1)',
+            }}
+          >
+            <div className="bg-linear-to-br from-pink-900/60 to-red-900/60 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-pink-500/40 max-w-2xl font-ppmori">
+              <p className="text-pink-100 text-2xl leading-relaxed font-light text-center font-ppmori">
+                {msg.text}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );

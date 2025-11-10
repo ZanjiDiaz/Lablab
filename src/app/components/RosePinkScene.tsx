@@ -9,11 +9,11 @@ import { useLoader } from '@react-three/fiber';
 
 export default function RosePinkScene() {
   return (
-    <div className="w-screen h-screen">
+    <div className="w-3/4 h-3/4 flex items-center justify-center hover:scale-110 transition-all duration-300">
       <Canvas 
         camera={{ 
           position: [90, 0, 250], 
-          fov: 33 
+          fov: 45 
         }}
         shadows
         gl={{ 
@@ -21,17 +21,25 @@ export default function RosePinkScene() {
           alpha: true,
           outputColorSpace: THREE.SRGBColorSpace,
           powerPreference: 'high-performance',
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.2,
         }}
         onCreated={({ gl }) => {
           gl.setClearColor(0xffc0cb, 0);
         }}
       >
 
-        <ambientLight intensity={1} />
+        <ambientLight intensity={1.2} />
         <directionalLight 
           position={[2, 2, 3]} 
           intensity={0.8} 
           castShadow
+        />
+        {/* Back lighting for better coverage */}
+        <directionalLight 
+          position={[-2, 2, -3]} 
+          intensity={0.6} 
+          color="#ffb3ba"
         />
         <Suspense fallback={null}>
           <RoseModel />
@@ -42,7 +50,7 @@ export default function RosePinkScene() {
           enableDamping
           enableZoom={true}
           minDistance={150}
-          maxDistance={500}
+          maxDistance={350}
           reverseOrbit={true}
           enablePan={false}
           minPolarAngle={0}
@@ -67,9 +75,10 @@ function RoseModel() {
       obj.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const material = new THREE.MeshStandardMaterial({
-            metalness: 0.1,
-            roughness: 0.5,
-            side: THREE.DoubleSide
+            metalness: 0.2,
+            roughness: 0.4,
+            side: THREE.DoubleSide,
+            envMapIntensity: 1.5,
           });
 
           if (child.name === "rose") {
@@ -92,15 +101,23 @@ function RoseModel() {
 
   return (
     <group ref={groupRef}>
+      {/* Front lighting */}
       <pointLight 
         position={[-100, 150, 200]}
-        intensity={1.2}
+        intensity={1.5}
         castShadow
       />
+      {/* Side/back lighting */}
       <pointLight 
         position={[100, 150, -100]}
-        intensity={0.8}
-        color="#d4a5a5"
+        intensity={1.2}
+        color="#ffb3ba"
+      />
+      {/* Additional back light for better coverage */}
+      <pointLight 
+        position={[0, 100, -150]}
+        intensity={1}
+        color="#ffc8d4"
       />
       <primitive object={obj} />
     </group>
