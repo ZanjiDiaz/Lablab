@@ -261,13 +261,11 @@ export default function Home() {
                 zIndex: 0,
               }}
             >
-              <Image
+              <img
                 src={`${basePath}/imgs/${img}`}
                 alt="background"
-                fill
-                className="object-contain"
+                className="w-full h-full object-contain"
                 style={{ objectPosition: 'center' }}
-                priority={index === 0}
               />
             </div>
           ))}
