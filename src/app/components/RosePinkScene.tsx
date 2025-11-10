@@ -55,7 +55,11 @@ export default function RosePinkScene() {
 }
 
 function RoseModel() {
-  const obj = useLoader(OBJLoader, '/3d/red_rose3.obj');
+  // Use basePath for GitHub Pages deployment
+  const basePath = typeof window !== 'undefined' && window.location.hostname.includes('github.io') 
+    ? '/Lablab' 
+    : '';
+  const obj = useLoader(OBJLoader, `${basePath}/3d/red_rose3.obj`);
   const groupRef = useRef<THREE.Group>(null!);
   
   useEffect(() => {

@@ -93,7 +93,10 @@ export default function Home() {
 
   // Initialize audio on mount (will play after user interaction)
   useEffect(() => {
-    audioRef.current = new Audio('/mp3/Ed Sheeran - Tenerife Sea .mp3');
+    const basePath = typeof window !== 'undefined' && window.location.hostname.includes('github.io') 
+      ? '/Lablab' 
+      : '';
+    audioRef.current = new Audio(`${basePath}/mp3/Ed Sheeran - Tenerife Sea .mp3`);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.75;
 
