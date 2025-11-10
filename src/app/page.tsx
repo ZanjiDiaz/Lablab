@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import RosePinkScene from './components/RosePinkScene';
 import TypingAnimation from '@/app/components/TypingAnimation';
 import { gsap } from "gsap";
@@ -26,6 +26,12 @@ export default function Home() {
   const lastImageTime = useRef(0);
   const lastImageUsed = useRef<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Calculate basePath based on hostname
+  const basePath = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+    return window.location.hostname.includes('github.io') ? '/Lablab' : '';
+  }, []);
 
   // Array of available images
   const images = [
@@ -93,9 +99,6 @@ export default function Home() {
 
   // Initialize audio on mount (will play after user interaction)
   useEffect(() => {
-    const basePath = typeof window !== 'undefined' && window.location.hostname.includes('github.io') 
-      ? '/Lablab' 
-      : '';
     audioRef.current = new Audio(`${basePath}/mp3/Ed Sheeran - Tenerife Sea .mp3`);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.75;
@@ -106,6 +109,7 @@ export default function Home() {
         audioRef.current = null;
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -207,7 +211,7 @@ export default function Home() {
             }}
           >
             <Image
-              src={`/imgs/${img.image}`}
+              src={`${basePath}/imgs/${img.image}`}
               alt="memory"
               width={150}
               height={150}
