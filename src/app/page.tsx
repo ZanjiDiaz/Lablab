@@ -245,7 +245,7 @@ export default function Home() {
       {showFlowersReveal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white font-ppmori overflow-hidden">
           <div className="relative w-full h-full flex flex-col items-center justify-center">
-            <img
+            <img  
               src={`${basePath}/flowers.png`}
               alt="flowers"
               className="absolute inset-0 w-full h-full object-contain animate-[scaleIn_2s_ease-out]"
@@ -285,7 +285,7 @@ export default function Home() {
         }}
       >
         {/* Background Slideshow */}
-        <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full  bg-linear-to-br from-pink-200 to-pink-300">
           {images.map((img, index) => (
             <div
               key={img}
