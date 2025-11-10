@@ -157,6 +157,11 @@ export default function Home() {
 
   // Initialize audio on mount (will play after user interaction)
   useEffect(() => {
+    if (!basePath && typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+      // Wait for basePath to be set
+      return;
+    }
+    
     audioRef.current = new Audio(`${basePath}/mp3/Ed Sheeran - Tenerife Sea .mp3`);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.75;
@@ -167,8 +172,7 @@ export default function Home() {
         audioRef.current = null;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [basePath]);
 
   // Background slideshow effect
   useEffect(() => {
