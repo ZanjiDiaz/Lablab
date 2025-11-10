@@ -15,6 +15,7 @@ gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 export default function Home() {
   const [showClickScreen, setShowClickScreen] = useState(true);
+  const [showFlowersReveal, setShowFlowersReveal] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [hoverImages, setHoverImages] = useState<Array<{ id: number; x: number; y: number; image: string }>>([]);
@@ -129,6 +130,12 @@ export default function Home() {
   const handleClickScreenClick = () => {
     handleUserInteraction();
     setShowClickScreen(false);
+    setShowFlowersReveal(true);
+    
+    // Hide flowers reveal after 3 seconds and show typing animation
+    setTimeout(() => {
+      setShowFlowersReveal(false);
+    }, 3000);
   };
 
   const handleRoseClick = () => {
@@ -232,8 +239,25 @@ export default function Home() {
         </div>
       )}
 
+      {/* Flowers Reveal Screen */}
+      {showFlowersReveal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white font-ppmori overflow-hidden">
+          <div className="relative w-full h-full flex flex-col items-center justify-center">
+            <img
+              src={`${basePath}/flowers.png`}
+              alt="flowers"
+              className="absolute inset-0 w-full h-full object-contain animate-[scaleIn_2s_ease-out]"
+            />
+            <h1 className="relative z-10 text-7xl md:text-9xl font-black text-black drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-pulse">
+              Charaaaaaaaaan
+            </h1><br />
+            <p className="relative z-10 text-7xl md:text-9xl font-black text-black drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-pulse"> Hahahahahahaha </p>
+          </div>
+        </div>
+      )}
+
       {/* Typing Animation Loading Screen */}
-      {!showClickScreen && showLoading && (
+      {!showClickScreen && !showFlowersReveal && showLoading && (
         <div 
           ref={loadingRef}
           className={`transition-opacity duration-800 ease-in-out ${
