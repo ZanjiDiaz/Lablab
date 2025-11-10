@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import RosePinkScene from './components/RosePinkScene';
 import TypingAnimation from '@/app/components/TypingAnimation';
 import { gsap } from "gsap";
@@ -20,6 +20,7 @@ export default function Home() {
   const [hoverImages, setHoverImages] = useState<Array<{ id: number; x: number; y: number; image: string }>>([]);
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState<Array<{ id: number; x: number; y: number; text: string }>>([]);
+  const [basePath, setBasePath] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const roseRef = useRef<HTMLDivElement>(null);
@@ -57,10 +58,13 @@ export default function Home() {
     "Happy happy happy birthday lablab!",
   ];
 
-  // Calculate basePath based on hostname
-  const basePath = useMemo(() => {
-    if (typeof window === 'undefined') return '';
-    return window.location.hostname.includes('github.io') ? '/Lablab' : '';
+  // Set basePath after component mounts
+  useEffect(() => {
+    if (window.location.hostname.includes('github.io')) {
+      setBasePath('/Lablab');
+    } else {
+      setBasePath('');
+    }
   }, []);
 
   // Array of available images
