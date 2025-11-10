@@ -112,16 +112,16 @@ export default function Home() {
 
   const handleLoadingComplete = () => {
     setFadeOut(true);
-    // Wait for fade out animation to complete before hiding loading
+    setShowLoading(false);
+    
+    // Play audio immediately when loading completes
     setTimeout(() => {
-      setShowLoading(false);
-      // Play audio when main page loads
-      if (audioRef.current && audioRef.current.paused) {
+      if (audioRef.current) {
         audioRef.current.play().catch(err => {
           console.log('Audio play error:', err);
         });
       }
-    }, 10);
+    }, 100);
   };
 
   const handleUserInteraction = () => {
@@ -169,9 +169,11 @@ export default function Home() {
       return;
     }
     
-    audioRef.current = new Audio(`${basePath}/mp3/Ed Sheeran - Tenerife Sea .mp3`);
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.75;
+    const audio = new Audio(`${basePath}/mp3/Ed Sheeran - Tenerife Sea .mp3`);
+    audio.loop = true;
+    audio.volume = 0.75;
+    audio.preload = 'auto'; // Preload the audio
+    audioRef.current = audio;
 
     return () => {
       if (audioRef.current) {
